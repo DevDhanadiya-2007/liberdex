@@ -19,12 +19,12 @@ Welcome to **Liberdex**! A revolutionary web3 application designed to empower yo
 
 2. **Install dependencies**:
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Run the app**:
    ```bash
-   npm run dev
+   pnpm run dev
    ```
    Access your wallet at `http://localhost:3000`.
 
