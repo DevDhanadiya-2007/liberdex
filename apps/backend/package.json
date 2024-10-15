@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "PORT=4000 next dev",
     "build": "next build",
-    "start": "PORT=4000 next start",
-    "lint": "next lint"
+    "start": "PORT=4000 next start"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",

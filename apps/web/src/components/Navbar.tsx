@@ -1,17 +1,37 @@
-"use client"
+'use client'
 
-import { useState } from "react"
+import { useState, useCallback, useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from 'next/navigation'
 import { Button } from "@ui/index"
-import { Menu } from "lucide-react"
+import { Menu, Loader2 } from "lucide-react"
+import { useAuth } from "../lib/useAuth"
 
 const navItems = [
     { href: "/dashboard", label: "Dashboard" },
-    { href: "/about", label: "About Us" },
 ]
 
 export default function Navbar() {
     const [activeLink, setActiveLink] = useState("")
+    const { isAuthenticated, logout, checkAuthStatus } = useAuth()
+    const router = useRouter()
+    const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+    useEffect(() => {
+        checkAuthStatus()
+    }, [checkAuthStatus])
+
+    const handleLogout = useCallback(async () => {
+        setIsLoggingOut(true)
+        try {
+            await logout()
+            router.push('/')
+        } catch (error) {
+            console.error('Logout error:', error)
+        } finally {
+            setIsLoggingOut(false)
+        }
+    }, [logout, router])
 
     return (
         <header className="bg-black text-white border-b border-gray-800">
@@ -19,7 +39,7 @@ export default function Navbar() {
                 <Link href="/" className="text-2xl font-bold" onClick={() => setActiveLink("/")}>
                     Liberdex
                 </Link>
-                <nav className="hidden md:flex space-x-6">
+                <div className="flex items-center space-x-6">
                     {navItems.map((item) => (
                         <Link
                             key={item.href}
@@ -33,18 +53,34 @@ export default function Navbar() {
                             {item.label}
                         </Link>
                     ))}
-                </nav>
-                <div className="flex items-center space-x-4">
-                    <Link href={"/auth/register"}>
+                    {isAuthenticated ? (
                         <Button
+                            variant="outline"
                             className="hidden md:inline-flex bg-white text-black rounded-lg hover:bg-gray-200 transition-colors"
+                            onClick={handleLogout}
+                            disabled={isLoggingOut}
                         >
-                            Register
+                            {isLoggingOut ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                </>
+                            ) : (
+                                'Logout'
+                            )}
                         </Button>
-                        <Button variant="ghost" className="md:hidden">
-                            <Menu className="h-6 w-6" />
-                        </Button>
-                    </Link>
+                    ) : (
+                        <Link href="/auth/login">
+                            <Button
+                                variant="outline"
+                                className="hidden md:inline-flex bg-white text-black rounded-lg hover:bg-gray-200 transition-colors"
+                            >
+                                Login
+                            </Button>
+                        </Link>
+                    )}
+                    <Button variant="ghost" className="md:hidden">
+                        <Menu className="h-6 w-6" />
+                    </Button>
                 </div>
             </div>
         </header>

@@ -4,9 +4,9 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint"
+    "build": "turbo run build",
+    "start": "pnpm run -r start"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
